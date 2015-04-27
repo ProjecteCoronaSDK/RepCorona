@@ -8,5 +8,5 @@ _H = display.actualContentHeight
 
 
 
-composer.gotoScene( "sceneComida" )
+composer.gotoScene( "pantalla1" )
 

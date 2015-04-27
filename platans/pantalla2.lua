@@ -1,83 +1,54 @@
+
 local composer = require( "composer" )
-local physics = require("physics")
-physics:start()
 local scene = composer.newScene()
-local temps = 20
+local widget = require ("widget")
+local temps =5
 local numero
-local puntuacio = 0
-local textpuntuacio
 
-
-local function touchBall( event )
-    print( " >> function touch banana" )
-     if event.phase == "began" then
-        event.target:setFillColor( math.random(0,1), math.random(0,1),math.random(0,1) )
-    end
-
-    return true
-end
-
- local function touchBanana( event )
-         if event.phase == "began" then
-            puntuacio = puntuacio+1
-            textpuntuacio.text = puntuacio -- puntos al click banana
-            print( " >>puntuacio"..puntuacio )
-            sonidoPlatano()
-            event.target:removeSelf( )
-        end
-
-        return true
-    end
-
-    local function listener( event )
-
-        --local cercle = display.newCircle( math.random( 0, _W ), 0, 20 )
-        --cercle:setFillColor( math.random(0,0.8), math.random(0,0.8),math.random(0,0.8))
-        --physics.addBody( cercle, { density = 0.1, bounce = 1 } )
-        local params = { time = 5000, y = _H-50}
-        --transition.to( cercle, params )
-        --cercle:addEventListener( "touch", touchBall )
-        --cercle:setFillColor(0,0,0)
-       
-        local image = display.newImageRect( "img/platanoAbierto.png", 130,150)
-        physics.addBody( image, { density = 0.1, bounce = 1} )
-        transition.to( image, params )
-      --  image.anchorX = 0
-      --  image.anchorY = 0.5
-        image.x = math.random( 0+65, _W-65 )
-        image.y = 0
-        image:addEventListener( "touch" , touchBanana )
-        
-
-
-    end
-
-
--- "scene:create()"
+--||||||||||||||||| CREATE ||||||||||||||||||||
 function scene:create( event )
-
+    --pantalla joc1
     local sceneGroup = self.view
-    local background = display.newImageRect( sceneGroup, "img/fondoJoc1.png", _W,_H)
+    local background = display.newImageRect( sceneGroup, "img/joc1.png", _W, _H )
+
+    --musica
+
+    print (" >>> ESTAMOS CREANDO la Escena de la pantalla 2")
+    print (" >> empieza a sonar musica en joc1")
+    --sonarMusica()--llama a la funcion 
+   
     background.x = _centerX
     background.y = _centerY
-    background:setFillColor( 255/255, 255/255, 255/255 )
 
-    -- timer.performWithDelay( 1000, listener, 0 )
+    --BOTON BACK Y PAUSE MUSICA
+    local button = widget.newButton{
+        x = _centerX,
+        y = _centerY+220,
+        label = "Back",
+        shape = "roundedRect",
+        width = 200,
+        height = 40,
+        fillColor = { default={ 1, 0, 0, 1 }, over={ 1, 0.1, 0.7, 0.4 } },
+        onRelease = function() myfunction() end
+    }
+    button:setFillColor( 0,0,0 )
+    sceneGroup:insert( button )
+    print (" >> hemos creado el boton Back pantalla joc1")
 
-    --cronometre
+
+    --CRONO
+
     print (" >> establecemos el tiempo: ")
     print  (temps)
-    -- timer.performWithDelay( 1000, listenerCronometre, temps )
-    numero = display.newText(sceneGroup, "", 340, 230, native.systemFont, 65 )
+
+    --timer.performWithDelay( 1000, listenerCronometre, temps )
+    numero = display.newText(sceneGroup, "", 120, 20, native.systemFont, 20 )
     numero.text = temps
-    numero:setFillColor( 255,0,0 )
+    numero:setFillColor( 0,0,0 )
 
-    --puntuacio
-    textpuntuacio = display.newText( sceneGroup, "", 330, 130, native.systemFont, 65 )
-    textpuntuacio:setFillColor( 255,0,0 )
+end 
+--||||||||||||||||| FIN CREATE ||||||||||||||||||||
 
-end
----------------------------------------------------
 
 --||||||||||||||||||||FUNCIONES|||||||||||||||||||||||
 
@@ -88,6 +59,7 @@ function myfunction()
     pauseMus()
     
     composer.gotoScene( "pantalla1" )
+    
     
 end
 
@@ -104,12 +76,6 @@ function sonarMusica()
         audio.play( music )
 end
 
-function sonidoPlatano()
-    local music = audio.loadSound( "sounds/explosionglobo.mp3")
-        audio.play( music )
-end
-
-
 --FUNCTION CRONO
 function listenerCronometre( event )
     temps = temps - 1
@@ -119,7 +85,7 @@ function listenerCronometre( event )
 
         print(" >> pantalla 2 to pantalla 1 temps=0")
         pauseMus()
-        temps = 20
+        temps = 5
         composer.gotoScene( "pantalla1" )
         
     end    
@@ -127,7 +93,8 @@ function listenerCronometre( event )
 end-- FIN FUNCTION CRONO
 
 
---------------------------------------------------
+--////////////////////////////////////////////////////////-
+
 -- "scene:show()"
 function scene:show( event )
 
@@ -137,19 +104,22 @@ function scene:show( event )
    
     if ( phase == "will" ) then
         print( ">> inicio PANTALLA 2 - JOC 1!!" )
-        -- numero.text = temps
+        numero.text = temps
+
 
     elseif ( phase == "did" ) then
         numero.text = temps
-        -- sonarMusica()--llama a la funcion 
-        -- print( ">> musica start" )
-        timer.performWithDelay( 1000, listener, 0 )--caen platanos
+        sonarMusica()--llama a la funcion 
+        print( ">> musica start" )
 
-        temps=20
-        print( " >> show--> temps "..temps )
+
+        temps=5
+        print( " >> temps "..temps )
+        
         timer.performWithDelay( 1000, listenerCronometre, temps )
 
 
+         
 
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
@@ -161,7 +131,8 @@ end
 
 -- "scene:hide()"
 function scene:hide( event )
-
+    print( " >> SCENE HIDE" )
+    print ( "----------------------------------------")
     local sceneGroup = self.view
     local phase = event.phase
 
@@ -177,7 +148,7 @@ end
 
 -- "scene:destroy()"
 function scene:destroy( event )
-
+    print( " >> SCENE DESTROY" )
     local sceneGroup = self.view
 
     -- Called prior to the removal of scene's view ("sceneGroup").
